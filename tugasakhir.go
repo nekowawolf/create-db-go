@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -27,30 +28,56 @@ func InsertOneDoc(db string, collection string, doc interface{}) (insertedID int
 	return insertResult.InsertedID
 }
 
-func InsertTugasakhir(tugasBesar, kelompok, matkul string, biodata Mahasiswa) (interface{}, error) {
-	// Membuat koneksi ke MongoDB
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(MongoString))
+func InsertTugasakhir(tugas2 string, tugas3 string, matkul string, phonenumber string, Biodata Mahasiswa) (InsertedID interface{}) {
+	var tugas Tugasakhir
+	tugas.Nama_tugasBesar = tugas2
+	tugas.Nama_kelompok = tugas3
+	tugas.Matakuliah = matkul
+	tugas.Phone_number = phonenumber
+	tugas.Biodata = Biodata
+	return InsertOneDoc("week4", "tugas", tugas)
+}
+
+func GetMahasiswaFromPhone(phone_number string) (mhs Tugasakhir) {
+	tugas := MongoConnect("week4").Collection("tugas")
+	filter := bson.M{"phone_number": phone_number}
+	err := tugas.FindOne(context.TODO(), filter).Decode(&mhs)
 	if err != nil {
-		return nil, err
+		fmt.Printf("GetMahasiswaFromPhone: %v\n", err)
 	}
-	defer client.Disconnect(context.TODO())
+	return mhs
+}
 
-	// Mendapatkan koleksi tugas dari database
-	tugasCollection := client.Database("week4").Collection("tugas")
-
-	// Membuat tugas baru
-	tugas := Tugasakhir{
-		tugasBesar:  tugasBesar,
-		kelomok:     kelompok,
-		Mata_kuliah: matkul,
-		Biodata:     biodata,
-	}
-
-	// Memasukkan tugas ke dalam database
-	insertResult, err := tugasCollection.InsertOne(context.TODO(), tugas)
+func GetTugasFromNama(nama string) (mhs Tugasakhir, err error) {
+	tugas := MongoConnect("week4").Collection("tugas")
+	filter := bson.M{"biodata.nama": nama}
+	err = tugas.FindOne(context.TODO(), filter).Decode(&mhs)
 	if err != nil {
-		return nil, err
+		fmt.Printf("GetTugasFromNama: %v\n", err)
 	}
+	return mhs, err
+}
 
-	return insertResult.InsertedID, nil
+func GetNamaFromAlamat(alamat string) (mhs Tugasakhir, err error) {
+	tugas := MongoConnect("week4").Collection("tugas")
+	filter := bson.M{"biodata.alamat.nama_jalan": alamat}
+	err = tugas.FindOne(context.TODO(), filter).Decode(&mhs)
+	if err != nil {
+		fmt.Printf("GetNamaFromAlamat: %v\n", err)
+	}
+	return mhs, err
+}
+
+func GetAllTugas() (data []Tugasakhir) {
+	tugas := MongoConnect("week4").Collection("tugas")
+	filter := bson.M{}
+	cursor, err := tugas.Find(context.TODO(), filter)
+	if err != nil {
+		fmt.Println("GetAllTugas :", err)
+	}
+	err = cursor.All(context.TODO(), &data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return
 }
