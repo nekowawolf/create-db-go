@@ -31,24 +31,6 @@ func TestGetMahasiswaFromPhoneNumber(t *testing.T) {
 	fmt.Println(biodata)
 }
 
-func TestGetTugasFromNama(t *testing.T) {
-	mhs, err := GetTugasFromNama("Kirito")
-	if err != nil {
-		fmt.Println("Error:", err)
-	} else {
-		fmt.Println("Nilai Mahasiswa:", mhs.Nama_tugasBesar)
-	}
-}
-
-func TestGetNamaFromAlamat(t *testing.T) {
-	mhs, err := GetNamaFromAlamat("Jalan Parapat")
-	if err != nil {
-		fmt.Println("Error:", err)
-	} else {
-		fmt.Println("Nama Mahasiswa:", mhs.Biodata.Nama)
-	}
-}
-
 func TestGetAllTugas(t *testing.T) {
 	data := GetAllTugas()
 	fmt.Println(data)
