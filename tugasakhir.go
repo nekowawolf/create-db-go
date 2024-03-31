@@ -33,7 +33,6 @@ func InsertTugasakhir(tugas2 string, tugas3 string, matkul string, phonenumber s
 	tugas.Nama_tugasBesar = tugas2
 	tugas.Nama_kelompok = tugas3
 	tugas.Matakuliah = matkul
-	tugas.Phone_number = phonenumber
 	tugas.Biodata = Biodata
 	return InsertOneDoc("week4", "tugas", tugas)
 }

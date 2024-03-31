@@ -26,6 +26,5 @@ type Tugasakhir struct {
 	Nama_tugasBesar string             `bson:"nama_tugasbesar,omitempty" json:"nama_tugasbesar,omitempty"`
 	Nama_kelompok   string             `bson:"nama_kelompok,omitempty" json:"nama_kelompok,omitempty"`
 	Matakuliah      string             `bson:"matakuliah,omitempty" json:"matakuliah,omitempty"`
-	Phone_number    string             `bson:"phone_number,omitempty" json:"phone_number,omitempty"`
 	Biodata         Mahasiswa          `bson:"biodata,omitempty" json:"biodata,omitempty"`
 }
